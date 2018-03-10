@@ -1,0 +1,24 @@
+{
+  "name": "mouse-wheel-zoom",
+  "version": "1.0.0",
+  "description": "Zoom html elements with mouse wheel",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel demo/index.html -d temp",
+    "build:demo": "parcel build demo/index.html -d docs --public-url /mouse-wheel-zoom/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/z3ut/mouse-wheel-zoom.git"
+  },
+  "keywords": [
+    "mouse",
+    "wheel",
+    "zoom",
+    "html"
+  ],
+  "author": "",
+  "license": "ISC"
+}
