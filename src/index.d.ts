@@ -4,7 +4,7 @@ declare module './index.js' {
 
   interface MouseWheelZoomConfig {
     element: HTMLElement;
-    zoomStep: number;
+    zoomStep?: number;
   }
 
   interface MouseWheelZoom {
@@ -15,5 +15,5 @@ declare module './index.js' {
 
   }
 
-  export function mouseWheelZoom(config?: MouseWheelZoomConfig): MouseWheelZoom;
+  export function mouseWheelZoom(config: MouseWheelZoomConfig): MouseWheelZoom;
 }
