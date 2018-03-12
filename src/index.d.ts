@@ -15,5 +15,5 @@ declare module './index.js' {
 
   }
 
-  export function line(config?: MouseWheelZoomConfig): MouseWheelZoom;
+  export function mouseWheelZoom(config?: MouseWheelZoomConfig): MouseWheelZoom;
 }
