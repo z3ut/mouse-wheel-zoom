@@ -10,6 +10,9 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
 
   let previousMouseMoveEvent;
 
+  let isDisposed = false;
+  let isDragging = false;
+
   initialize();
 
   function initialize() {
@@ -38,6 +41,16 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
     element.addEventListener('wheel', onElementMouseWheel);
     element.addEventListener('mousedown', onElementMouseDown);
     element.addEventListener('mouseup', onElementMouseUp);
+  }
+
+  function usibscribeFromEvents() {
+    element.removeEventListener('wheel', onElementMouseWheel);
+    element.removeEventListener('mousedown', onElementMouseDown);
+    element.removeEventListener('mouseup', onElementMouseUp);
+
+    if (isDragging) {
+      unsubscribeFromDraggingEvents();
+    }
   }
 
   function onElementMouseWheel(e) {
@@ -84,14 +97,25 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
 
   function onElementMouseDown(e) {
     e.preventDefault();
-    previousMouseMoveEvent = e;
 
-    element.addEventListener('mousemove', onElementMouseMove);
-    containerElement.addEventListener('mouseout', onElementMouseUp);
+    previousMouseMoveEvent = e;
+    isDragging = true;
+    subscribeToDraggingEvents();
   }
 
   function onElementMouseUp(e) {
     e.preventDefault();
+
+    isDragging = false;
+    unsubscribeFromDraggingEvents();
+  }
+
+  function subscribeToDraggingEvents() {
+    element.addEventListener('mousemove', onElementMouseMove);
+    containerElement.addEventListener('mouseout', onElementMouseUp);
+  }
+
+  function unsubscribeFromDraggingEvents() {
     element.removeEventListener('mousemove', onElementMouseMove);
     containerElement.removeEventListener('mouseout', onElementMouseUp);
   }
@@ -136,12 +160,48 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
   }
 
   function reset() {
+    throwIfDisposed();
+
     resetCurrentPosition();
     setCurrentPosition();
+
+    // new image just set and not loaded, current size is based on old image
+    // drop width\height for new image to fit in container boundaries
+    element.style.width = ``;
+    element.style.height = ``;
+  }
+
+  function setSrc(src) {
+    throwIfDisposed();
+
+    element.src = src;
+    backgroundElement.src = src;
+  }
+
+  function setSrcAndReset(src) {
+    setSrc(src);
+    reset();
+  }
+
+  function dispose() {
+    throwIfDisposed();
+
+    isDisposed = true;
+    usibscribeFromEvents();
+    containerElement.remove();
+  }
+
+  function throwIfDisposed() {
+    if (isDisposed) {
+      throw new Error('Mouse Wheel Zoom been disposed');
+    }
   }
 
   return {
-    reset
+    reset,
+    setSrc,
+    setSrcAndReset,
+    dispose
   }
 }
 
