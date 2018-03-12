@@ -48,6 +48,24 @@ Mouse-wheel-zoom will replace it with
 
 _Warning!_ Do not use for zooming html elements with id. After cloning page will have 2 elements with same id.
 
+## Documentation
+
+### Config object
+
+Property | Description | Default
+---|---|---
+element | DOM element to zoom | none
+zoomStep | Size change for each step, relative to 1 = initial size | .1
+
+### Returned object
+
+Method | Description
+---|---
+reset | Rest current zoom level and position
+setSrc | Change image src
+setSrcAndReset | Change image src and reset
+dispose | Remove zooming element from page
+
 ## Development
 
 Project require globally installed [parcel](https://parceljs.org/getting_started.html). Run ```npm run start``` and see demo page with live reload on [http://localhost:1234](http://localhost:1234)
