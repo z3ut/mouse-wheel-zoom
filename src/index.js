@@ -176,11 +176,6 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
 
     resetCurrentPosition();
     setCurrentPosition();
-
-    // new image just set and not loaded, current size is based on old image
-    // drop width\height for new image to fit in container boundaries
-    element.style.width = ``;
-    element.style.height = ``;
   }
 
   function setSrc(src) {
