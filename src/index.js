@@ -20,7 +20,7 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
     resetCurrentPosition();
     subscribeToEvents();
   }
-
+  
   function createElementWrappers() {
     containerElement = document.createElement('div');
     containerElement.setAttribute('style',
@@ -35,19 +35,26 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
     containerElement.insertBefore(backgroundElement, null);
     
     containerElement.insertBefore(element, null);
+    
+    element.style.maxWidth = 'none';
+    element.style.maxHeight = 'none';
   }
 
   function subscribeToEvents() {
     element.addEventListener('wheel', onElementMouseWheel);
     element.addEventListener('mousedown', onElementMouseDown);
     element.addEventListener('mouseup', onElementMouseUp);
+    element.addEventListener('load', onDOMChanges);
+    window.addEventListener('resize', onDOMChanges);
   }
 
   function usibscribeFromEvents() {
     element.removeEventListener('wheel', onElementMouseWheel);
     element.removeEventListener('mousedown', onElementMouseDown);
     element.removeEventListener('mouseup', onElementMouseUp);
-
+    element.removeEventListener('load', onDOMChanges);
+    window.removeEventListener('resize', onDOMChanges);
+ 
     if (isDragging) {
       unsubscribeFromDraggingEvents();
     }
@@ -108,6 +115,11 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
 
     isDragging = false;
     unsubscribeFromDraggingEvents();
+  }
+  
+  function onDOMChanges() {
+    resetCurrentPosition();
+    setCurrentPosition();
   }
 
   function subscribeToDraggingEvents() {
