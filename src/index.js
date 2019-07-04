@@ -61,6 +61,8 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
   }
 
   function onElementMouseWheel(e) {
+    e.preventDefault();
+
     const { elementXPart: xPart, elementYPart: yPart } =
       getEventAxisPositionOnDiv(element, e);
     const { elementXPart: containerXPart, elementYPart: containerYPart } =
