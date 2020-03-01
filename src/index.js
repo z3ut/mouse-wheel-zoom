@@ -10,6 +10,9 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
 
   let previousMouseMoveEvent;
 
+  let isDisposed = false;
+  let isDragging = false;
+
   initialize();
 
   function initialize() {
@@ -17,7 +20,7 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
     resetCurrentPosition();
     subscribeToEvents();
   }
-
+  
   function createElementWrappers() {
     containerElement = document.createElement('div');
     containerElement.setAttribute('style',
@@ -32,15 +35,34 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
     containerElement.insertBefore(backgroundElement, null);
     
     containerElement.insertBefore(element, null);
+    
+    element.style.maxWidth = 'none';
+    element.style.maxHeight = 'none';
   }
 
   function subscribeToEvents() {
     element.addEventListener('wheel', onElementMouseWheel);
     element.addEventListener('mousedown', onElementMouseDown);
     element.addEventListener('mouseup', onElementMouseUp);
+    element.addEventListener('load', onDOMChanges);
+    window.addEventListener('resize', onDOMChanges);
+  }
+
+  function usibscribeFromEvents() {
+    element.removeEventListener('wheel', onElementMouseWheel);
+    element.removeEventListener('mousedown', onElementMouseDown);
+    element.removeEventListener('mouseup', onElementMouseUp);
+    element.removeEventListener('load', onDOMChanges);
+    window.removeEventListener('resize', onDOMChanges);
+ 
+    if (isDragging) {
+      unsubscribeFromDraggingEvents();
+    }
   }
 
   function onElementMouseWheel(e) {
+    e.preventDefault();
+
     const { elementXPart: xPart, elementYPart: yPart } =
       getEventAxisPositionOnDiv(element, e);
     const { elementXPart: containerXPart, elementYPart: containerYPart } =
@@ -84,14 +106,30 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
 
   function onElementMouseDown(e) {
     e.preventDefault();
-    previousMouseMoveEvent = e;
 
-    element.addEventListener('mousemove', onElementMouseMove);
-    containerElement.addEventListener('mouseout', onElementMouseUp);
+    previousMouseMoveEvent = e;
+    isDragging = true;
+    subscribeToDraggingEvents();
   }
 
   function onElementMouseUp(e) {
     e.preventDefault();
+
+    isDragging = false;
+    unsubscribeFromDraggingEvents();
+  }
+  
+  function onDOMChanges() {
+    resetCurrentPosition();
+    setCurrentPosition();
+  }
+
+  function subscribeToDraggingEvents() {
+    element.addEventListener('mousemove', onElementMouseMove);
+    containerElement.addEventListener('mouseout', onElementMouseUp);
+  }
+
+  function unsubscribeFromDraggingEvents() {
     element.removeEventListener('mousemove', onElementMouseMove);
     containerElement.removeEventListener('mouseout', onElementMouseUp);
   }
@@ -136,12 +174,43 @@ function mouseWheelZoom({ element, zoomStep = .1 } = {}) {
   }
 
   function reset() {
+    throwIfDisposed();
+
     resetCurrentPosition();
     setCurrentPosition();
   }
 
+  function setSrc(src) {
+    throwIfDisposed();
+
+    element.src = src;
+    backgroundElement.src = src;
+  }
+
+  function setSrcAndReset(src) {
+    setSrc(src);
+    reset();
+  }
+
+  function dispose() {
+    throwIfDisposed();
+
+    isDisposed = true;
+    usibscribeFromEvents();
+    containerElement.remove();
+  }
+
+  function throwIfDisposed() {
+    if (isDisposed) {
+      throw new Error('Mouse Wheel Zoom been disposed');
+    }
+  }
+
   return {
-    reset
+    reset,
+    setSrc,
+    setSrcAndReset,
+    dispose
   }
 }
 

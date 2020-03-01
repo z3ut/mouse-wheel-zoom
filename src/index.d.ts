@@ -4,12 +4,16 @@ declare module './index.js' {
 
   interface MouseWheelZoomConfig {
     element: HTMLElement;
-    zoomStep: number;
+    zoomStep?: number;
   }
 
   interface MouseWheelZoom {
     reset: () => void;
+    setSrc: (src: string) => void;
+    setSrcAndReset: (src: string) => void;
+    dispose: () => void;
+
   }
 
-  export function line(config?: MouseWheelZoomConfig): MouseWheelZoom;
+  export function mouseWheelZoom(config: MouseWheelZoomConfig): MouseWheelZoom;
 }
