@@ -27,7 +27,7 @@ wz.reset();
 
 ## Description
 
-Ispired by [Jack Moore wheelzoom](https://github.com/jackmoore/wheelzoom) This package allow to view image and copy image url after right-click on image.
+Ispired by [Jack Moore wheelzoom](https://github.com/jackmoore/wheelzoom) This package allows to view image and copy image url after right-click on image.
 
 For given html element mouse-wheel-zoom will replace it with inline-block div wrapper. Wrapper will have two elements - original element with absolute positioning and cloned element with zero opacity. Wrapper size will be determined by zero opacity element, original element with absolute positioning can be moved\resized with mouse.
 
